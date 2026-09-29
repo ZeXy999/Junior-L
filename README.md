@@ -12,16 +12,11 @@ Educational programming content and curriculum materials.
   - 1.3 Understanding the Project Structure and the manage.py Command
   - 1.4 Hello, World! Building Your First View
 
-- [`Django_Chapter2_Models_and_Databases.md`](./Django_Chapter2_Models_and_Databases.md) — Chapter 2 of a Django course:
-  - 2.1 Introduction to Databases and Django's ORM
+- [`Django_Chapter2_Models_and_Databases.md`](./Django_Chapter2_Models_and_Databases.md) — Chapter 2 of a Django course (sections 2.2–2.5):
   - 2.2 Configuring Your Database
   - 2.3 Defining Models: The Blueprint of Your Data
   - 2.4 Migrations: Evolving Your Database Schema
   - 2.5 The Django Admin Interface
-  - 2.6 The Database API: Querying and Manipulating Data
-  - 2.7 Model Relationships: Connecting Your Data
-  - 2.8 Advanced Model Features
-  - 2.9 Chapter Summary and What's Next
 
 ### Working Code — [`exercises/django-textbook/`](./exercises/django-textbook)
 
