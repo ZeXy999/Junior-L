@@ -1,0 +1,52 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'catalog/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <div class="wrap bar">
+        <a class="brand" href="{% url 'home' %}">&#128218; {{ SITE_NAME }}</a>
+        <nav class="nav">
+            <a href="{% url 'book-list' %}">Catalog</a>
+            <a href="{% url 'author-list' %}">Authors</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'my-library' %}">My Library</a>
+            {% endif %}
+        </nav>
+        <form class="search" action="{% url 'book-list' %}" method="get">
+            <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search title, author or ISBN&hellip;">
+        </form>
+        <div class="account">
+            {% if user.is_authenticated %}
+                <span class="muted">{{ user.username }}</span>
+                {% if user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
+                <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button type="submit" class="linklike">Log out</button></form>
+            {% else %}
+                <a href="{% url 'login' %}">Log in</a>
+                <a class="btn small" href="{% url 'signup' %}">Sign up</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+{% if messages %}
+<div class="wrap messages">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main class="wrap">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="wrap">&copy; {{ YEAR }} {{ SITE_NAME }} &middot; Built by {{ SITE_OWNER }}</div>
+</footer>
+</body>
+</html>

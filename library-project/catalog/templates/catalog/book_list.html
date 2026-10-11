@@ -1,0 +1,38 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Catalog &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Catalog</h1>
+
+<form method="get" class="filters">
+    <input type="search" name="q" value="{{ q }}" placeholder="Title, author or ISBN">
+    <select name="genre">
+        <option value="">All genres</option>
+        {% for g in genres %}<option value="{{ g.slug }}" {% if g.slug == current_genre %}selected{% endif %}>{{ g.name }}</option>{% endfor %}
+    </select>
+    <select name="sort">
+        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title A&ndash;Z</option>
+        <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest rated</option>
+        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most reviewed</option>
+        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest published</option>
+        <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest published</option>
+        <option value="added" {% if current_sort == 'added' %}selected{% endif %}>Recently added</option>
+    </select>
+    <label class="check"><input type="checkbox" name="available" value="1" {% if only_available %}checked{% endif %}> Available now</label>
+    <button class="btn" type="submit">Apply</button>
+    <a class="muted" href="{% url 'book-list' %}">Reset</a>
+</form>
+
+<p class="muted">{{ result_count }} book{{ result_count|pluralize }} found</p>
+
+<div class="grid">
+    {% for book in books %}
+        {% include 'catalog/includes/book_card.html' %}
+    {% empty %}
+        <p>No books match your search.</p>
+    {% endfor %}
+</div>
+
+{% include 'catalog/includes/pagination.html' %}
+{% endblock %}

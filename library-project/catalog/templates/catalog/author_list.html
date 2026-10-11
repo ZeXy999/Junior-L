@@ -1,0 +1,13 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Authors &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>Authors</h1>
+<ul class="author-list">
+    {% for author in authors %}
+        <li><a href="{{ author.get_absolute_url }}">{{ author.full_name }}</a> <span class="muted">{{ author.lifespan }} &middot; {{ author.book_total }} book{{ author.book_total|pluralize }}</span></li>
+    {% endfor %}
+</ul>
+{% include 'catalog/includes/pagination.html' %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ author.full_name }} &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>{{ author.full_name }}</h1>
+{% if author.lifespan %}<p class="muted">{{ author.lifespan }}</p>{% endif %}
+{% if author.bio %}<p>{{ author.bio }}</p>{% endif %}
+<h2>Books</h2>
+<div class="grid">{% for book in books %}{% include 'catalog/includes/book_card.html' %}{% endfor %}</div>
+{% endblock %}

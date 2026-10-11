@@ -1,0 +1,51 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}My Library &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<h1>My Library</h1>
+
+<h2>Currently borrowed <span class="muted">({{ active_loans|length }} of {{ max_loans }})</span></h2>
+{% if active_loans %}
+<table class="table">
+    <thead><tr><th>Book</th><th>Borrowed</th><th>Due</th><th></th></tr></thead>
+    <tbody>
+    {% for loan in active_loans %}
+        <tr>
+            <td><a href="{{ loan.copy.book.get_absolute_url }}">{{ loan.copy.book.title }}</a> <span class="muted">copy #{{ loan.copy.copy_number }}</span></td>
+            <td>{{ loan.borrowed_at|date:"d M Y" }}</td>
+            <td>
+                {{ loan.due_date|date:"d M Y" }}
+                {% if loan.is_overdue %}<span class="badge out">{{ loan.days_left|cut:"-" }} day{{ loan.days_left|cut:"-"|pluralize }} overdue</span>
+                {% else %}<span class="badge ok">{{ loan.days_left }} day{{ loan.days_left|pluralize }} left</span>{% endif %}
+            </td>
+            <td><form method="post" action="{% url 'loan-return' loan.pk %}">{% csrf_token %}<button class="btn small secondary" type="submit">Return</button></form></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="muted">You have no books out. <a href="{% url 'book-list' %}">Browse the catalog</a>.</p>
+{% endif %}
+
+<h2>My reviews</h2>
+{% for review in my_reviews %}
+    <article class="review"><header><a href="{{ review.book.get_absolute_url }}">{{ review.book.title }}</a></header><p>{{ review.comment }}</p></article>
+{% empty %}
+    <p class="muted">You haven't reviewed anything yet.</p>
+{% endfor %}
+
+<h2>History</h2>
+{% if history %}
+<table class="table">
+    <thead><tr><th>Book</th><th>Borrowed</th><th>Returned</th></tr></thead>
+    <tbody>
+    {% for loan in history %}
+        <tr><td><a href="{{ loan.copy.book.get_absolute_url }}">{{ loan.copy.book.title }}</a></td><td>{{ loan.borrowed_at|date:"d M Y" }}</td><td>{{ loan.returned_at|date:"d M Y" }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="muted">No past loans yet.</p>
+{% endif %}
+{% endblock %}

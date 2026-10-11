@@ -1,0 +1,127 @@
+{% extends 'catalog/base.html' %}
+{% load catalog_extras %}
+
+{% block title %}{{ book.title }} &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="detail">
+    <div class="detail-cover">
+        {% if book.cover %}
+            <img class="cover big" src="{{ book.cover.url }}" alt="Cover of {{ book.title }}">
+        {% else %}
+            <div class="cover big placeholder">{{ book.title }}</div>
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+        <p class="crumbs"><a href="{% url 'book-list' %}">Catalog</a>{% if book.genre %} / <a href="{% url 'book-list' %}?genre={{ book.genre.slug }}">{{ book.genre.name }}</a>{% endif %}</p>
+        <h1>{{ book.title }}</h1>
+        {% if book.subtitle %}<p class="subtitle">{{ book.subtitle }}</p>{% endif %}
+        <p class="byline">by {% for a in book.authors.all %}<a href="{{ a.get_absolute_url }}">{{ a.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+
+        <p class="rating big">
+            {% if book.avg_rating %}{{ book.avg_rating|stars }} <strong>{{ book.avg_rating|floatformat:1 }}</strong> <span class="muted">from {{ book.review_count }} review{{ book.review_count|pluralize }}</span>
+            {% else %}<span class="muted">No ratings yet &ndash; be the first to review it.</span>{% endif %}
+        </p>
+
+        <p>{{ book.summary }}</p>
+
+        <dl class="facts">
+            <div><dt>Published</dt><dd>{{ book.publication_year }}</dd></div>
+            <div><dt>Pages</dt><dd>{{ book.pages }}</dd></div>
+            <div><dt>Language</dt><dd>{{ book.language }}</dd></div>
+            <div><dt>ISBN</dt><dd>{{ book.isbn }}</dd></div>
+            {% if book.publisher %}<div><dt>Publisher</dt><dd>{{ book.publisher.name }}</dd></div>{% endif %}
+        </dl>
+
+        <div class="borrow-box">
+            {% if user_loan %}
+                <p>You have this book &ndash; due back <strong>{{ user_loan.due_date|date:"d M Y" }}</strong>{% if user_loan.is_overdue %} <span class="badge out">overdue</span>{% endif %}.</p>
+                <form method="post" action="{% url 'loan-return' user_loan.pk %}">{% csrf_token %}
+                    <input type="hidden" name="next" value="{{ book.get_absolute_url }}">
+                    <button class="btn secondary" type="submit">Return this book</button>
+                </form>
+            {% elif book.available_count > 0 %}
+                <p><span class="badge ok">{{ book.available_count }} of {{ book.copy_count }} copies available</span></p>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'book-borrow' book.pk %}">{% csrf_token %}
+                        <button class="btn" type="submit">Borrow for {{ loan_days }} days</button>
+                    </form>
+                {% else %}
+                    <a class="btn" href="{% url 'login' %}?next={{ request.path }}">Log in to borrow</a>
+                {% endif %}
+            {% else %}
+                <p><span class="badge out">All {{ book.copy_count }} copies are on loan</span></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<section class="two-col">
+    <div>
+        <h2>Copies</h2>
+        <table class="table">
+            <thead><tr><th>Copy</th><th>Condition</th><th>Shelf</th><th>Status</th></tr></thead>
+            <tbody>
+            {% for copy in copies %}
+                <tr>
+                    <td>#{{ copy.copy_number }}</td>
+                    <td>{{ copy.get_condition_display }}</td>
+                    <td>{{ copy.shelf|default:"&ndash;" }}</td>
+                    <td>{% with loan=copy.active_loan %}{% if loan %}<span class="badge out">On loan &middot; due {{ loan.due_date|date:"d M" }}</span>{% else %}<span class="badge ok">Available</span>{% endif %}{% endwith %}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4" class="muted">No copies in the library yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2>Rating breakdown</h2>
+        <ul class="bars">
+            {% for row in rating_breakdown %}
+                <li><span>{{ row.stars }} &#9733;</span><div class="bar"><div style="width: {{ row.pct }}%"></div></div><span class="muted">{{ row.count }}</span></li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Reviews</h2>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'book-review' book.pk %}" class="review-form">{% csrf_token %}
+            <h3>{% if user_review %}Update your review{% else %}Write a review{% endif %}</h3>
+            <div class="radios">
+                {% for radio in review_form.rating %}
+                    <label>{{ radio.tag }} {{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            {{ review_form.comment }}
+            <button class="btn" type="submit">{% if user_review %}Save changes{% else %}Post review{% endif %}</button>
+        </form>
+    {% else %}
+        <p class="muted"><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to write a review.</p>
+    {% endif %}
+
+    {% for review in reviews %}
+        <article class="review">
+            <header>
+                <strong>{{ review.user.username }}</strong>
+                {{ review.rating|stars }}
+                <span class="muted">{{ review.created_at|date:"d M Y" }}</span>
+            </header>
+            <p>{{ review.comment|linebreaksbr }}</p>
+        </article>
+    {% empty %}
+        <p class="muted">No reviews yet.</p>
+    {% endfor %}
+</section>
+
+{% if related %}
+<section>
+    <h2>More in {{ book.genre.name }}</h2>
+    <div class="grid">{% for book in related %}{% include 'catalog/includes/book_card.html' %}{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

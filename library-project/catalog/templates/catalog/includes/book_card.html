@@ -1,0 +1,22 @@
+{% load catalog_extras %}
+<article class="card">
+    <a class="cover-link" href="{{ book.get_absolute_url }}">
+        {% if book.cover %}
+            <img class="cover" src="{{ book.cover.url }}" alt="Cover of {{ book.title }}" loading="lazy">
+        {% else %}
+            <div class="cover placeholder">{{ book.title }}</div>
+        {% endif %}
+    </a>
+    <div class="card-body">
+        <h3><a href="{{ book.get_absolute_url }}">{{ book.title }}</a></h3>
+        <p class="muted">{% for a in book.authors.all %}{{ a.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        <p class="rating">
+            {% if book.avg_rating %}{{ book.avg_rating|stars }} <span class="muted">{{ book.avg_rating|floatformat:1 }} ({{ book.review_count }})</span>{% else %}<span class="muted">No ratings yet</span>{% endif %}
+        </p>
+        {% if book.available_count > 0 %}
+            <span class="badge ok">{{ book.available_count }} of {{ book.copy_count }} available</span>
+        {% else %}
+            <span class="badge out">All copies on loan</span>
+        {% endif %}
+    </div>
+</article>

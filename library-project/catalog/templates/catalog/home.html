@@ -1,0 +1,43 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<section class="hero">
+    <h1>Welcome to {{ SITE_NAME }}</h1>
+    <p>Browse the shelves, borrow a book for two weeks, and tell other readers what you thought.</p>
+    <form action="{% url 'book-list' %}" method="get" class="hero-search">
+        <input type="search" name="q" placeholder="Search by title, author or ISBN&hellip;">
+        <button class="btn" type="submit">Search</button>
+    </form>
+    <ul class="stats">
+        <li><strong>{{ stats.books }}</strong> books</li>
+        <li><strong>{{ stats.authors }}</strong> authors</li>
+        <li><strong>{{ stats.copies }}</strong> copies</li>
+        <li><strong>{{ stats.reviews }}</strong> reviews</li>
+        <li><strong>{{ stats.on_loan }}</strong> on loan now</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Browse by genre</h2>
+    <div class="chips">
+        {% for genre in genres %}
+            <a class="chip" href="{% url 'book-list' %}?genre={{ genre.slug }}">{{ genre.name }} <span>{{ genre.n }}</span></a>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+    <h2>Top rated</h2>
+    <div class="grid">{% for book in top_rated %}{% include 'catalog/includes/book_card.html' %}{% empty %}<p class="muted">No rated books yet.</p>{% endfor %}</div>
+</section>
+
+<section>
+    <h2>Recently added</h2>
+    <div class="grid">{% for book in newest %}{% include 'catalog/includes/book_card.html' %}{% endfor %}</div>
+</section>
+
+<section>
+    <h2>Most reviewed</h2>
+    <div class="grid">{% for book in most_reviewed %}{% include 'catalog/includes/book_card.html' %}{% endfor %}</div>
+</section>
+{% endblock %}

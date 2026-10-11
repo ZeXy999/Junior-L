@@ -17,3 +17,7 @@ Educational programming content and curriculum materials.
   - **Exercise 4 — Template Inheritance**: all pages extend a shared `base.html` with a common header, nav, and footer
 
   All routes were run and verified against a local dev server before being pushed.
+
+## Library website (this branch)
+
+[`library-project/`](./library-project) is a complete Django library site by Junior: catalog with search and filters, generated book covers, ratings and reviews, borrowing and returns, accounts, admin, a seed command that adds random books, and tests. See [`library-project/README.md`](./library-project/README.md) to run it.

@@ -1,0 +1,13 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Sign up &middot; {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1>Create an account</h1>
+    <form method="post" class="form">{% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Sign up</button>
+    </form>
+</div>
+{% endblock %}
