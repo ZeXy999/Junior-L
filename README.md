@@ -18,6 +18,17 @@ Educational programming content and curriculum materials.
   - 2.4 Migrations: Evolving Your Database Schema
   - 2.5 The Django Admin Interface
 
+- [`Django_Chapter3_Views_and_Templates.md`](./Django_Chapter3_Views_and_Templates.md) — Chapter 3 of a Django course:
+  - 3.1 Introduction to Views
+  - 3.2 Function-Based Views
+  - 3.3 Class-Based Views
+  - 3.4 Generic Display Views
+  - 3.5 Generic Edit Views
+  - 3.6 Template Fundamentals
+  - 3.7 Advanced Template Features
+  - 3.8 Forms in Django
+  - 3.9 Chapter Summary and What's Next
+
 ### Working Code — [`exercises/django-textbook/`](./exercises/django-textbook)
 
 A real Django project implementing what each chapter covers, tested end-to-end before being pushed.
