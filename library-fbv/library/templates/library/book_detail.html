@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - My Library{% endblock %}
+
+{% block content %}
+<a href="{% url 'library:book-list' %}">&larr; Back to all books</a>
+
+<div class="row mt-3">
+    <div class="col-md-4">
+        {% if book.cover_image %}
+        <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}">
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <h1>{{ book.title }}</h1>
+        {% if book.subtitle %}<h5 class="text-muted">{{ book.subtitle }}</h5>{% endif %}
+
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Genre:</strong> {{ book.get_genre_display }}</p>
+        <p><strong>Published:</strong> {{ book.publication_date }}</p>
+        <p><strong>Pages:</strong> {{ book.pages }}</p>
+        <p><strong>Rating:</strong> &#9733; {{ book.rating }}/5</p>
+        <p>
+            <strong>Status:</strong>
+            {% if book.is_available %}
+            <span class="badge bg-success">Available</span>
+            {% else %}
+            <span class="badge bg-secondary">Unavailable</span>
+            {% endif %}
+        </p>
+
+        <h5 class="mt-4">Summary</h5>
+        <p>{{ book.summary }}</p>
+
+        {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'library:book-edit' book.pk %}" class="btn btn-outline-primary">Edit</a>
+            <a href="{% url 'library:book-delete' book.pk %}" class="btn btn-outline-danger">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if similar_books %}
+<hr class="my-5">
+<h4>Similar Books</h4>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+    {% for similar in similar_books %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h6 class="card-title">{{ similar.title|truncatewords:6 }}</h6>
+                <a href="{% url 'library:book-detail' similar.pk %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

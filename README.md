@@ -29,6 +29,13 @@ Educational programming content and curriculum materials.
   - 3.8 Forms in Django
   - 3.9 Chapter Summary and What's Next
 
+### Library App (function-based views) — [`library-fbv/`](./library-fbv)
+
+A complete Django library website: browse, search, filter, sort and paginate books, view details with similar titles,
+and add / edit / delete books (with cover uploads, login and per-user permissions) through function-based views, Bootstrap templates,
+the Django admin and 53 automated tests. Run it with `pip install -r requirements.txt`, `python manage.py migrate`,
+`python manage.py seed_demo` and `python manage.py runserver` from inside `library-fbv/` (full instructions in [`library-fbv/README.md`](./library-fbv/README.md)).
+
 ### Working Code — [`exercises/django-textbook/`](./exercises/django-textbook)
 
 A real Django project implementing what each chapter covers, tested end-to-end before being pushed.
